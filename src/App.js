@@ -3,7 +3,7 @@ import './App.css';
 
 function App() {
   const [users, setUsers] = useState([]);
-  const [formData, setFormData] = useState({ name: '', email: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', photo: null });
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
@@ -25,22 +25,35 @@ function App() {
     
     const method = editingId ? 'PUT' : 'POST';
 
+    const form = new FormData();
+    form.append('name', formData.name);
+    form.append('email', formData.email);
+    if (formData.photo) {
+      form.append('photo', formData.photo);
+    }
+    if (editingId && formData.existingPhoto) {
+      form.append('existingPhoto', formData.existingPhoto);
+    }
+
     fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
+      body: form
     })
       .then((response) => response.json())
       .then(() => {
         fetchUsers();
-        setFormData({ name: '', email: '' });
+        setFormData({ name: '', email: '', photo: null });
         setEditingId(null);
       })
       .catch((error) => console.error('Error:', error));
   };
 
   const handleEdit = (user) => {
-    setFormData({ name: user.name, email: user.email });
+    setFormData({ 
+      name: user.name, 
+      email: user.email, 
+      existingPhoto: user.photo 
+    });
     setEditingId(user.id);
   };
 
@@ -61,6 +74,11 @@ function App() {
           value={formData.email}
           onChange={(e) => setFormData({...formData, email: e.target.value})}
         />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setFormData({...formData, photo: e.target.files[0]})}
+        />
         <button type="submit">
           {editingId ? 'Update' : 'Tambah'} Pengguna
         </button>
@@ -69,8 +87,17 @@ function App() {
       <ul>
         {users.map((user) => (
           <li key={user.id}>
-            {user.name} - {user.email}
-            <button onClick={() => handleEdit(user)}>Edit</button>
+            {user.photo && (
+              <img 
+                src={`http://localhost:3000${user.photo}`} 
+                alt={user.name}
+                className="profile-photo"
+              />
+            )}
+            <div>
+              {user.name} - {user.email}
+              <button onClick={() => handleEdit(user)}>Edit</button>
+            </div>
           </li>
         ))}
       </ul>
