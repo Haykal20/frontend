@@ -11,7 +11,7 @@ function App() {
   }, []);
 
   const fetchUsers = () => {
-    fetch('http://localhost:3000/api/users')
+    fetch('/api/users')
       .then((response) => response.json())
       .then((data) => setUsers(data))
       .catch((error) => console.error('Error fetching data:', error));
@@ -20,8 +20,8 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const url = editingId 
-      ? `http://localhost:3000/api/users/${editingId}`
-      : 'http://localhost:3000/api/users';
+      ? `/api/users/${editingId}`
+      : '/api/users';
     
     const method = editingId ? 'PUT' : 'POST';
 
