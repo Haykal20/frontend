@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
+import { FaEdit, FaUserAlt } from 'react-icons/fa';
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -76,41 +77,44 @@ function App() {
   return (
     <div className="App">
       <h1>Daftar Pengguna</h1>
-      
+
       {error && <div className="error-message">{error}</div>}
-      
+
       <form onSubmit={handleSubmit} className="user-form">
+        <h2>{editingId ? 'Edit Pengguna' : 'Tambah Pengguna'}</h2>
         <div className="form-group">
+          <label htmlFor="name">Nama</label>
           <input
+            id="name"
             type="text"
-            placeholder="Nama"
+            placeholder="Masukkan nama"
             value={formData.name}
-            onChange={(e) => setFormData({...formData, name: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             required
           />
         </div>
         <div className="form-group">
+          <label htmlFor="email">Email</label>
           <input
+            id="email"
             type="email"
-            placeholder="Email"
+            placeholder="Masukkan email"
             value={formData.email}
-            onChange={(e) => setFormData({...formData, email: e.target.value})}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             required
           />
         </div>
         <div className="form-group">
-          <div className="file-input-container">
-            <label htmlFor="photo" className="file-input-label">
-              Choose Photo
-            </label>
-            <input
-              id="photo"
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="file-input"
-            />
-          </div>
+          <label htmlFor="photo" className="file-input-label">
+            Pilih Foto
+          </label>
+          <input
+            id="photo"
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="file-input"
+          />
           {preview && (
             <div className="preview-container">
               <img src={preview} alt="Preview" className="photo-preview" />
@@ -118,7 +122,7 @@ function App() {
           )}
         </div>
         <button type="submit" disabled={loading}>
-          {loading ? 'Saving...' : editingId ? 'Update' : 'Tambah'} Pengguna
+          {loading ? 'Menyimpan...' : editingId ? 'Perbarui' : 'Tambah'} Pengguna
         </button>
       </form>
 
@@ -127,19 +131,24 @@ function App() {
           <div key={user.id} className="user-card">
             <div className="user-photo">
               {user.photo ? (
-                <img 
-                  src={`http://localhost:3000${user.photo}`} 
+                <img
+                  src={`http://localhost:3000${user.photo}`}
                   alt={user.name}
                   className="profile-photo"
                 />
               ) : (
-                <div className="photo-placeholder">No Photo</div>
+                <div className="photo-placeholder">
+                  <FaUserAlt size={50} color="#666" />
+                </div>
               )}
             </div>
             <div className="user-info">
               <h3>{user.name}</h3>
               <p>{user.email}</p>
-              <button onClick={() => handleEdit(user)}>Edit</button>
+              <button onClick={() => handleEdit(user)}>
+                <FaEdit style={{ marginRight: '5px' }} />
+                Edit
+              </button>
             </div>
           </div>
         ))}
